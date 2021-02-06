@@ -1,8 +1,9 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
-import App from './App';
-import ErrorBoundary from './ErrorBoundary';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { BrowserRouter } from 'react-router-dom'
+import App from './App'
+import ErrorBoundary from './ErrorBoundary'
+import { CartProvider } from './cartContext'
 
 /*
   Even with ErrorBoundary error stack traces will still show up on development mode,
@@ -12,8 +13,10 @@ import ErrorBoundary from './ErrorBoundary';
 ReactDOM.render(
   <ErrorBoundary>
     <BrowserRouter>
-      <App />
+      <CartProvider>
+        <App />
+      </CartProvider>
     </BrowserRouter>
   </ErrorBoundary>,
   document.getElementById('root')
-);
+)

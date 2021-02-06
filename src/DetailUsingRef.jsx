@@ -1,16 +1,12 @@
-import React, { useState } from 'react'
-import { useCart } from './cartContext'
+import React, { useState, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import useFetch from './services/useFetch'
 import Spinner from './Spinner'
 import PageNotFound from './PageNotFound'
 
-export default function Detail() {
-  // Getting dispatch data via Context
-  const { dispatch } = useCart()
-
+export default function Detail({ addToCart }) {
   const { id } = useParams()
-  const [sku, setSku] = useState('')
+  const skuRef = useRef()
   const navigate = useNavigate()
   const { data: product, loading, error } = useFetch(`products/${id}`)
 
@@ -24,7 +20,12 @@ export default function Detail() {
       <p>{product.description}</p>
       <p id='price'>${product.price}</p>
 
-      <select id='size' value={sku} onChange={(e) => setSku(e.target.value)}>
+      {/* skuRef holds a reference to <select> html element */}
+      {/*
+        Select below is an uncontrolled component,
+        React has no control on select value, the HTML element itself holds the value
+      */}
+      <select id='size' ref={skuRef}>
         <option value=''>What size?</option>
         {product.skus.map((sku) => (
           <option key={sku.sku} value={sku.sku}>
@@ -35,10 +36,13 @@ export default function Detail() {
 
       <p>
         <button
-          disabled={!sku}
           className='btn btn-primary'
           onClick={() => {
-            dispatch({ type: 'add', payload: { id, sku } })
+            const sku = skuRef.current.value
+            if (!sku) {
+              return alert('Select size.')
+            }
+            addToCart(id, sku)
             navigate('/cart')
           }}
         >
