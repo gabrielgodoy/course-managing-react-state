@@ -46,3 +46,10 @@ export default function useFetch(url) {
 
   return { data, error, loading }
 }
+
+// Creating this so a class component can consume useFetch custom hook
+// Function as child
+export function Fetch({ url, children }) {
+  const { data, loading, error } = useFetch(url)
+  return children(data, loading, error)
+}
